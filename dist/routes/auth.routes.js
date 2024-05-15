@@ -8,5 +8,5 @@ const auth_controller_1 = require("../controllers/auth.controller");
 const router = express_1.default.Router();
 router.post("/register", auth_controller_1.register);
 router.post("/login", auth_controller_1.login);
-router.post("/verify", auth_controller_1.verifyCode);
+router.post("/verify/", auth_controller_1.verifyCode);
 exports.default = router;
