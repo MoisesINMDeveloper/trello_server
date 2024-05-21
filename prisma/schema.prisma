@@ -21,4 +21,39 @@ model User {
   password String
   verified Boolean? @default(false)
 
+  tasks    Task[]   // Relación uno a muchos con Task
+  comments Comment[] // Relación uno a muchos con Comment
+}
+
+model TaskStatus {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+
+  tasks  Task[]  // Relación uno a muchos con Task
+}
+
+model Task {
+  id          Int         @id @default(autoincrement())
+  title       String
+  description String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  statusId    Int
+  userId      Int
+
+  user        User        @relation(fields: [userId], references: [id])
+  status      TaskStatus  @relation(fields: [statusId], references: [id])
+  comments    Comment[]   // Relación uno a muchos con Comment
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  taskId    Int
+  userId    Int
+
+  task      Task     @relation(fields: [taskId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }

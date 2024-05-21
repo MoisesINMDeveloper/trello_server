@@ -28,10 +28,9 @@ export const createUser = async (
     res.status(201).json(user);
   } catch (error) {
     console.error("Error creating user:", error);
+    res.status(500).json({ error: "Error creating user" });
   }
-  res.status(500).json({ error: "Error creating user" });
 };
-
 export const getAllUsers = async (
   req: Request,
   res: Response
@@ -41,14 +40,15 @@ export const getAllUsers = async (
     const usersWithoutPassword = users.map((user: User) => ({
       ...user,
       token: user.verified ? generateToken(user) : undefined,
-      password: undefined,
+      password: undefined, // Asegúrate de que la contraseña no se incluya en la respuesta
     }));
     res.status(200).json(usersWithoutPassword);
   } catch (error) {
-    console.error(error);
+    console.error("Error retrieving users:", error);
     res.status(500).json({ error: "There was an error, try later" });
   }
 };
+
 export const getUserById = async (
   req: Request,
   res: Response
@@ -67,7 +67,7 @@ export const getUserById = async (
     };
     res.status(200).json(userWithoutPassword);
   } catch (error) {
-    console.error(error);
+    console.error("Error retrieving user:", error);
     res.status(500).json({ error: "There was an error, try later" });
   }
 };
@@ -81,23 +81,14 @@ export const updateUser = async (
   try {
     let dataToUpdate: any = {};
 
-    if (username) {
-      dataToUpdate.username = username;
-    }
-    if (name) {
-      dataToUpdate.name = name;
-    }
-    if (email) {
-      dataToUpdate.email = email;
-    }
+    if (username) dataToUpdate.username = username;
+    if (name) dataToUpdate.name = name;
+    if (email) dataToUpdate.email = email;
     if (password) {
       const hashedPassword = await hashPassword(password);
       dataToUpdate.password = hashedPassword;
     }
-
-    if (verified !== undefined) {
-      dataToUpdate.verified = verified;
-    }
+    if (verified !== undefined) dataToUpdate.verified = verified;
 
     const updatedUser = await userPrisma.update({
       where: { id: userId },
@@ -109,13 +100,14 @@ export const updateUser = async (
     if (error?.code === "P2002" && error?.meta?.target?.includes("email")) {
       res.status(400).json({ error: "The email entered already exists" });
     } else if (error?.code === "P2025") {
-      res.status(404).json("User not found");
+      res.status(404).json({ error: "User not found" });
     } else {
       console.error("Error updating user:", error);
       res.status(500).json({ error: "There was an error, try later" });
     }
   }
 };
+
 export const deleteUser = async (
   req: Request,
   res: Response
@@ -126,9 +118,9 @@ export const deleteUser = async (
     res.status(200).json({ message: `The user ${userId} has been deleted` });
   } catch (error: any) {
     if (error?.code === "P2025") {
-      res.status(404).json("User not found");
+      res.status(404).json({ error: "User not found" });
     } else {
-      console.error(error);
+      console.error("Error deleting user:", error);
       res.status(500).json({ error: "There was an error, try later" });
     }
   }

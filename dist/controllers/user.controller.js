@@ -38,8 +38,8 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
     catch (error) {
         console.error("Error creating user:", error);
+        res.status(500).json({ error: "Error creating user" });
     }
-    res.status(500).json({ error: "Error creating user" });
 });
 exports.createUser = createUser;
 const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -49,7 +49,7 @@ const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(200).json(usersWithoutPassword);
     }
     catch (error) {
-        console.error(error);
+        console.error("Error retrieving users:", error);
         res.status(500).json({ error: "There was an error, try later" });
     }
 });
@@ -66,7 +66,7 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(200).json(userWithoutPassword);
     }
     catch (error) {
-        console.error(error);
+        console.error("Error retrieving user:", error);
         res.status(500).json({ error: "There was an error, try later" });
     }
 });
@@ -77,22 +77,18 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const { username, name, email, password, verified } = req.body;
     try {
         let dataToUpdate = {};
-        if (username) {
+        if (username)
             dataToUpdate.username = username;
-        }
-        if (name) {
+        if (name)
             dataToUpdate.name = name;
-        }
-        if (email) {
+        if (email)
             dataToUpdate.email = email;
-        }
         if (password) {
             const hashedPassword = yield (0, password_service_1.hashPassword)(password);
             dataToUpdate.password = hashedPassword;
         }
-        if (verified !== undefined) {
+        if (verified !== undefined)
             dataToUpdate.verified = verified;
-        }
         const updatedUser = yield user_prisma_1.default.update({
             where: { id: userId },
             data: dataToUpdate,
@@ -104,7 +100,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             res.status(400).json({ error: "The email entered already exists" });
         }
         else if ((error === null || error === void 0 ? void 0 : error.code) === "P2025") {
-            res.status(404).json("User not found");
+            res.status(404).json({ error: "User not found" });
         }
         else {
             console.error("Error updating user:", error);
@@ -121,10 +117,10 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
     catch (error) {
         if ((error === null || error === void 0 ? void 0 : error.code) === "P2025") {
-            res.status(404).json("User not found");
+            res.status(404).json({ error: "User not found" });
         }
         else {
-            console.error(error);
+            console.error("Error deleting user:", error);
             res.status(500).json({ error: "There was an error, try later" });
         }
     }
