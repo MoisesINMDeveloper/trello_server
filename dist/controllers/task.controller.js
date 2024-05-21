@@ -15,6 +15,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTask = exports.updateTask = exports.getTaskById = exports.getAllTasks = exports.createTask = void 0;
 const task_prisma_1 = __importDefault(require("../models/task.prisma")); // Asegúrate de que este sea el camino correcto a tu instancia de Prisma Client
 const comment_prisma_1 = __importDefault(require("../models/comment.prisma"));
+// Utilidades para eliminar la contraseña
+const removePasswordFromUser = (user) => {
+    if (user && user.password) {
+        delete user.password;
+    }
+    return user;
+};
+const removePasswordFromTask = (task) => {
+    if (task.user) {
+        task.user = removePasswordFromUser(task.user);
+    }
+    if (task.comments) {
+        task.comments = task.comments.map((comment) => {
+            if (comment.user) {
+                comment.user = removePasswordFromUser(comment.user);
+            }
+            return comment;
+        });
+    }
+    return task;
+};
 const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { title, description, statusId, userId, comments } = req.body;
@@ -44,7 +65,7 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 comments: true,
             },
         });
-        res.status(201).json(task);
+        res.status(201).json(removePasswordFromTask(task));
     }
     catch (error) {
         console.error("Error creating task: ", error);
@@ -63,7 +84,8 @@ const getAllTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 comments: true,
             },
         });
-        res.status(200).json(tasks);
+        const tasksWithoutPasswords = tasks.map(removePasswordFromTask);
+        res.status(200).json(tasksWithoutPasswords);
     }
     catch (error) {
         console.error("Error retrieving tasks: ", error);
@@ -88,7 +110,7 @@ const getTaskById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             res.status(404).json({ error: "Task not found" });
             return;
         }
-        res.status(200).json(task);
+        res.status(200).json(removePasswordFromTask(task));
     }
     catch (error) {
         console.error("Error retrieving task: ", error);
@@ -129,7 +151,7 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 comments: true,
             },
         });
-        res.status(200).json(updatedTask);
+        res.status(200).json(removePasswordFromTask(updatedTask));
     }
     catch (error) {
         console.error("Error updating task: ", error);

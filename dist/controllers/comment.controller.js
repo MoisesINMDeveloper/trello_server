@@ -38,6 +38,10 @@ const createComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.createComment = createComment;
 const getCommentsByTaskId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const taskId = parseInt(req.params.taskId);
+    if (isNaN(taskId)) {
+        res.status(400).json({ error: "Invalid task ID" });
+        return;
+    }
     try {
         const comments = yield comment_prisma_1.default.findMany({
             where: { taskId },

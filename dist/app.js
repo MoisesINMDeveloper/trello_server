@@ -19,7 +19,7 @@ app.options("*", (0, cors_1.default)());
 app.use("/v1/users", user_routes_1.default); // Ruta para las operaciones de los usuarios
 app.use("/v1/auth", auth_routes_1.default); // Ruta para la autenticación
 app.use("/v1/task", task_routes_1.default);
-app.use("v1/task-status", task_status_routes_1.default);
-app.use("v1/comment", comment_routes_1.default);
+app.use("/v1/task-status", task_status_routes_1.default);
+app.use("/v1/comment", comment_routes_1.default);
 // Exportar la aplicación Express
 exports.default = app;
