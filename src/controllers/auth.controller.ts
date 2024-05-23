@@ -83,7 +83,6 @@ export const login = async (req: Request, res: Response) => {
       username: user.username,
       name: user.name,
       email: user.email,
-
       token: token,
       verified: user.verified,
     };
@@ -126,10 +125,25 @@ export const verifyCode = async (
       data: { verified: true },
     });
 
+    // Generar el token para el usuario verificado
+    const token = generateToken(user);
+
     // Eliminar el código de verificación almacenado
     delete verificationCodes[email];
 
-    res.status(200).json({ message: "Email verified successfully." });
+    // Crear el objeto de usuario para enviar en la respuesta, excluyendo la contraseña
+    const userToSend = {
+      id: user.id,
+      username: user.username,
+      name: user.name,
+      email: user.email,
+      token: token,
+      verified: true,
+    };
+
+    res
+      .status(200)
+      .json({ message: "Email verified successfully.", user: userToSend });
   } catch (error: any) {
     console.error("Verification error:", error);
     res.status(500).json({ error: "Error verifying email" });

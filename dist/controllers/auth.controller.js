@@ -132,9 +132,22 @@ const verifyCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             where: { email },
             data: { verified: true },
         });
+        // Generar el token para el usuario verificado
+        const token = (0, auth_service_1.generateToken)(user);
         // Eliminar el código de verificación almacenado
         delete verificationCodes[email];
-        res.status(200).json({ message: "Email verified successfully." });
+        // Crear el objeto de usuario para enviar en la respuesta, excluyendo la contraseña
+        const userToSend = {
+            id: user.id,
+            username: user.username,
+            name: user.name,
+            email: user.email,
+            token: token,
+            verified: true,
+        };
+        res
+            .status(200)
+            .json({ message: "Email verified successfully.", user: userToSend });
     }
     catch (error) {
         console.error("Verification error:", error);
