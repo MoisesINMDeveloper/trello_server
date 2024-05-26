@@ -1,4 +1,5 @@
 import express from "express";
+import autenticateToken from "../middleware/autenticate.token";
 import {
   createTask,
   deleteTask,
@@ -9,10 +10,10 @@ import {
 
 const router = express.Router();
 
-router.post("/", createTask);
-router.get("/", getAllTasks);
-router.get("/:id", getTaskById);
-router.put("/:id", updateTask);
-router.delete("/:id", deleteTask);
+router.post("/", autenticateToken, createTask);
+router.get("/", autenticateToken, getAllTasks);
+router.get("/:id", autenticateToken, getTaskById);
+router.put("/:id", autenticateToken, updateTask);
+router.delete("/:id", autenticateToken, deleteTask);
 
 export default router;

@@ -3,6 +3,7 @@ import cors from "cors";
 import usersRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
 import taskRoutes from "./routes/task.routes";
+import getUserDataRoutes from "./routes/user.data.routes";
 import taskStatusRoutes from "./routes/task.status.routes";
 import commentRoutes from "./routes/comment.routes";
 const app = express();
@@ -16,6 +17,7 @@ app.options("*", cors());
 
 // Rutas
 app.use("/v1/users", usersRoutes); // Ruta para las operaciones de los usuarios
+app.use("/v1/auth", getUserDataRoutes);
 app.use("/v1/auth", authRoutes); // Ruta para la autenticación
 app.use("/v1/task", taskRoutes);
 app.use("/v1/task-status", taskStatusRoutes);
