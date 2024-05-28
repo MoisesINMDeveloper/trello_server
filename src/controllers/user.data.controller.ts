@@ -10,14 +10,23 @@ export const getUserData = async (
     const user = res.locals.user;
     if (!user) {
       res.status(404).json({ error: "User not found" });
+      return;
     }
 
     // Obtener todas las tareas del usuario
     const userTasks = await prismaTask.findMany({
       where: { userId: user.id },
       include: {
-        comments: true,
-        // user: true,
+        comments: {
+          include: {
+            user: {
+              // Incluir el usuario asociado a cada comentario
+              select: {
+                username: true, // Solo seleccionar el username
+              },
+            },
+          },
+        },
         status: true,
       },
     });
@@ -28,7 +37,13 @@ export const getUserData = async (
     // Crear un objeto que contenga toda la información del usuario y sus tareas con comentarios
     const userData = {
       ...user,
-      tasks: userTasks,
+      tasks: userTasks.map((task) => ({
+        ...task,
+        comments: task.comments.map((comment) => ({
+          ...comment,
+          username: comment.user.username, // Añadir el username del usuario a cada comentario
+        })),
+      })),
     };
 
     // Enviar toda la información del usuario en la respuesta
