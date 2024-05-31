@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCommentById = exports.getCommentsByTaskId = exports.createComment = void 0;
+exports.updateCommentById = exports.deleteCommentById = exports.getCommentsByTaskId = exports.createComment = void 0;
 const comment_prisma_1 = __importDefault(require("../models/comment.prisma"));
 // Crear un comentario
 const createComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -76,3 +76,28 @@ const deleteCommentById = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.deleteCommentById = deleteCommentById;
+// Actualizar comentario por ID
+const updateCommentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const commentId = parseInt(req.params.commentId);
+    const { content } = req.body;
+    if (isNaN(commentId)) {
+        res.status(400).json({ error: "Invalid comment ID" });
+        return;
+    }
+    if (!content) {
+        res.status(400).json({ error: "Missing required field: content" });
+        return;
+    }
+    try {
+        const updatedComment = yield comment_prisma_1.default.update({
+            where: { id: commentId },
+            data: { content },
+        });
+        res.status(200).json(updatedComment);
+    }
+    catch (error) {
+        console.error("Error updating comment:", error);
+        res.status(500).json({ error: "Error updating comment" });
+    }
+});
+exports.updateCommentById = updateCommentById;

@@ -68,3 +68,30 @@ export const deleteCommentById = async (
     res.status(500).json({ error: "Error deleting comment" });
   }
 };
+
+// Actualizar comentario por ID
+export const updateCommentById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const commentId: number = parseInt(req.params.commentId);
+  const { content } = req.body;
+  if (isNaN(commentId)) {
+    res.status(400).json({ error: "Invalid comment ID" });
+    return;
+  }
+  if (!content) {
+    res.status(400).json({ error: "Missing required field: content" });
+    return;
+  }
+  try {
+    const updatedComment = await prismaComment.update({
+      where: { id: commentId },
+      data: { content },
+    });
+    res.status(200).json(updatedComment);
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    res.status(500).json({ error: "Error updating comment" });
+  }
+};
