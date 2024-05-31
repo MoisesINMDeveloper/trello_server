@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCommentsByTaskId = exports.createComment = void 0;
+exports.deleteCommentById = exports.getCommentsByTaskId = exports.createComment = void 0;
 const comment_prisma_1 = __importDefault(require("../models/comment.prisma"));
 const createComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { content, taskId, userId } = req.body;
@@ -55,3 +55,21 @@ const getCommentsByTaskId = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getCommentsByTaskId = getCommentsByTaskId;
+const deleteCommentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const commentId = parseInt(req.params.commentId);
+    if (isNaN(commentId)) {
+        res.status(400).json({ error: "Invalid comment ID" });
+        return;
+    }
+    try {
+        yield comment_prisma_1.default.delete({
+            where: { id: commentId },
+        });
+        res.status(200).json({ message: "Comment deleted successfully" });
+    }
+    catch (error) {
+        console.error("Error deleting comment:", error);
+        res.status(500).json({ error: "Error deleting comment" });
+    }
+});
+exports.deleteCommentById = deleteCommentById;
