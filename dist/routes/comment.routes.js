@@ -8,5 +8,5 @@ const comment_controller_1 = require("../controllers/comment.controller");
 const router = express_1.default.Router();
 router.post("/", comment_controller_1.createComment);
 router.get("/:id", comment_controller_1.getCommentsByTaskId);
-router.delete("/:id", comment_controller_1.deleteCommentById);
+router.delete("/:commentId", comment_controller_1.deleteCommentById);
 exports.default = router;

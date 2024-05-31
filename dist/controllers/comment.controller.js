@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCommentById = exports.getCommentsByTaskId = exports.createComment = void 0;
 const comment_prisma_1 = __importDefault(require("../models/comment.prisma"));
+// Crear un comentario
 const createComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { content, taskId, userId } = req.body;
     if (!content || !taskId || !userId) {
@@ -36,8 +37,9 @@ const createComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.createComment = createComment;
+// Obtener comentarios por ID de tarea
 const getCommentsByTaskId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const taskId = parseInt(req.params.taskId);
+    const taskId = parseInt(req.params.id);
     if (isNaN(taskId)) {
         res.status(400).json({ error: "Invalid task ID" });
         return;
@@ -55,6 +57,7 @@ const getCommentsByTaskId = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getCommentsByTaskId = getCommentsByTaskId;
+// Eliminar comentario por ID
 const deleteCommentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const commentId = parseInt(req.params.commentId);
     if (isNaN(commentId)) {

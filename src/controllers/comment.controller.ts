@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import prismaComment from "../models/comment.prisma";
+
+// Crear un comentario
 export const createComment = async (
   req: Request,
   res: Response
@@ -23,11 +25,13 @@ export const createComment = async (
     res.status(500).json({ error: "Error creating comment" });
   }
 };
+
+// Obtener comentarios por ID de tarea
 export const getCommentsByTaskId = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const taskId: number = parseInt(req.params.taskId);
+  const taskId: number = parseInt(req.params.id);
   if (isNaN(taskId)) {
     res.status(400).json({ error: "Invalid task ID" });
     return;
@@ -43,6 +47,8 @@ export const getCommentsByTaskId = async (
     res.status(500).json({ error: "Error retrieving comments" });
   }
 };
+
+// Eliminar comentario por ID
 export const deleteCommentById = async (
   req: Request,
   res: Response

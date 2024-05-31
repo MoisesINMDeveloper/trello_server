@@ -2,14 +2,14 @@ import express from "express";
 
 import {
   createComment,
-  deleteCommentById,
   getCommentsByTaskId,
+  deleteCommentById,
 } from "../controllers/comment.controller";
 
 const router = express.Router();
 
 router.post("/", createComment);
 router.get("/:id", getCommentsByTaskId);
-router.delete("/:id", deleteCommentById);
+router.delete("/:commentId", deleteCommentById);
 
 export default router;
