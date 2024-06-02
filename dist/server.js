@@ -19,4 +19,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on PORT: ${PORT}`);
 });
-// como acceder al header de la solicitud de un servicio con express
