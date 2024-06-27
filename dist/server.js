@@ -10,14 +10,14 @@ const app_1 = __importDefault(require("./app")); // Asegúrate de que este archi
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const corsOptions = {
-    origin: "*", // Permitir todas las solicitudes
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Incluir OPTIONS
+    origin: "https://trello-v1-project-jlerifagu-moisesinmdevelopers-projects.vercel.app", // Permite solo solicitudes desde este origen
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"], // Asegúrate de incluir todos los encabezados necesarios
 };
 app.use((0, cors_1.default)(corsOptions)); // Aplicar configuración CORS
 app.use(express_1.default.json()); // Para parsear JSON
 app.use("/api", app_1.default); // Usar las rutas definidas en `appRoutes`
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on PORT: ${PORT}`);
 });
